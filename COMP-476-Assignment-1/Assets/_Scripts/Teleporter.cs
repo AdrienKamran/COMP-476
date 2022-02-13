@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Teleporter : MonoBehaviour
 {
+    // Set-up for teleporter script (set in editor per wall)
     public BoxCollider bc;
     public float offset = 2f;
     public bool north;
@@ -11,18 +12,8 @@ public class Teleporter : MonoBehaviour
     public bool east;
     public bool west;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    // When the player collides with a teleporter wall, teleport the player to the diametric opposite wall at an offset.
+    // The offset is used to avoid infinite teleports.
     public void OnTriggerEnter(Collider other)
     {
         Debug.Log("Wall triggered");
