@@ -34,12 +34,12 @@ public class NPC : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Move the player in the chosen direction at a set move speed
+        // Move the NPC in the chosen direction at a set move speed
         rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
-        // If the player is moving...
+        // If the NPC is moving...
         if (movement != Vector3.zero)
         {
-            // ... Create a quaternion which sets where the player should be facing
+            // ... Create a quaternion which sets where the NPC should be facing
             Quaternion targetRotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(movement), rotationSpeed * Time.fixedDeltaTime);
             // Rotate towards that direction at a set rotation speed
             rb.MoveRotation(targetRotation);
