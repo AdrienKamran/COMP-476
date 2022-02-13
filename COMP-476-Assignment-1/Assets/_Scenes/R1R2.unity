@@ -506,10 +506,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d323756058402cc448c93db1cb5c5de8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 15
+  moveSpeed: 1
+  maxSpeed: 10
   rotationSpeed: 300
   rb: {fileID: 419619284}
+  targetObj: {fileID: 934583703}
   frequency: 3
+  stopRadius: 3
+  slowRadius: 6
 --- !u!4 &419619286
 Transform:
   m_ObjectHideFlags: 0
@@ -1173,10 +1177,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d323756058402cc448c93db1cb5c5de8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 15
+  moveSpeed: 1
+  maxSpeed: 10
   rotationSpeed: 300
   rb: {fileID: 934583705}
+  targetObj: {fileID: 1330013997}
   frequency: 3
+  stopRadius: 3
+  slowRadius: 6
 --- !u!4 &934583707
 Transform:
   m_ObjectHideFlags: 0
@@ -1622,10 +1630,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d323756058402cc448c93db1cb5c5de8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 15
+  moveSpeed: 1
+  maxSpeed: 10
   rotationSpeed: 300
   rb: {fileID: 1330013999}
+  targetObj: {fileID: 1332269143}
   frequency: 3
+  stopRadius: 3
+  slowRadius: 6
 --- !u!4 &1330014001
 Transform:
   m_ObjectHideFlags: 0
