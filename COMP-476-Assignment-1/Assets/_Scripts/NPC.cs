@@ -12,11 +12,14 @@ public class NPC : MonoBehaviour
     public float frequency = 3f;
     public float stopRadius = 3f;
     public float slowRadius = 6f;
+    public float farRadius = 15f;
+    public bool flee;
 
     private float timeRemaining;
+    private float distance;
     private Transform target;
 
-    Vector3 movement;
+    [SerializeField] private Vector3 movement;
 
     // Start is called before the first frame update
     void Start()
@@ -29,13 +32,30 @@ public class NPC : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        Debug.DrawLine(transform.position, target.position, Color.green);
     }
 
     private void FixedUpdate()
     {
-        movement = KinematicSeek();
-        Move();
+        LockTarget();
+        if (flee)
+        {
+            //movement = KinematicFlee();
+        }
+        // A2 : 
+        else
+        {
+            if (distance > farRadius)
+            {
+                return;
+            }
+            else
+            {
+
+                movement = KinematicSeek();
+                Move();
+            }
+        }
         LookAtMovement();
     }
 
@@ -61,7 +81,8 @@ public class NPC : MonoBehaviour
     {
         Vector3 desiredVelocity = target.position - transform.position;
         float distance = desiredVelocity.magnitude;
-        desiredVelocity = desiredVelocity.normalized * maxSpeed;
+        float distanceFactor = (1 / Mathf.Pow(farRadius, 2) * Mathf.Pow(distance, 2));
+        desiredVelocity = desiredVelocity.normalized * distanceFactor * maxSpeed;
 
         if (distance <= stopRadius)
         {
@@ -75,5 +96,17 @@ public class NPC : MonoBehaviour
         return desiredVelocity;
     }
 
+    void LockTarget()
+    {
+        movement = target.position - transform.position;
+        distance = movement.magnitude;
+    }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, stopRadius);
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, farRadius);
+    }
 }
