@@ -53,7 +53,10 @@ public class NPC : MonoBehaviour
             movement = KinematicSeek();
         }
         // Turn to the locked target.
-        LookAtMovement();
+        if (distance > slowRadius)
+        {
+            LookAtMovement();
+        }
         // If we're still out of the seek range, stop here.
         if (distance > farRadius)
         {
@@ -61,8 +64,12 @@ public class NPC : MonoBehaviour
         }
         else
         {
+            if (seekVelocityMagnitude < 5f)
+            {
+                Move();
+            }
             // If we're inside the far radius and inside the vision cone, move.
-            if (InsideFOV())
+            else if (InsideFOV())
             {
                 Move();
             }
