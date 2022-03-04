@@ -9,6 +9,13 @@ COMP-476-Assignment-1/[Bb]uild/
 COMP-476-Assignment-1/[Bb]uilds/
 COMP-476-Assignment-1/[Ll]ogs/
 COMP-476-Assignment-1/[Mm]emoryCaptures/
+COMP-476-Assignment-2/[Ll]ibrary/
+COMP-476-Assignment-2/[Tt]emp/
+COMP-476-Assignment-2/[Oo]bj/
+COMP-476-Assignment-2/[Bb]uild/
+COMP-476-Assignment-2/[Bb]uilds/
+COMP-476-Assignment-2/[Ll]ogs/
+COMP-476-Assignment-2/[Mm]emoryCaptures/
 
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
