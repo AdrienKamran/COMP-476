@@ -16,6 +16,13 @@ public class Pathfinding : MonoBehaviour
     public GameObject openPointPrefab;
     public GameObject closedPointPrefab;
     public GameObject pathPointPrefab;
+    public GameObject npcObj;
+    private NPC npc;
+
+    private void Start()
+    {
+        npc = npcObj.GetComponent<NPC>();
+    }
 
     private void Update()
     {
@@ -28,18 +35,20 @@ public class Pathfinding : MonoBehaviour
                     startNode = null;
                     goalNode = null;
                     ClearPoints();
+                    npc.targetObj = null;
                 }
 
                 if (startNode == null)
                 {
                     startNode = hit.collider.gameObject.GetComponent<GridGraphNode>();
+                    npcObj.transform.position = startNode.transform.position;
                 }
                 else if (goalNode == null)
                 {
                     goalNode = hit.collider.gameObject.GetComponent<GridGraphNode>();
-
+                    npc.targetObj = hit.collider.gameObject;
                     // TODO: use an admissible heuristic and pass it to the FindPath function
-                    List<GridGraphNode> path = FindPath(startNode, goalNode);
+                    List<GridGraphNode> path = FindPath(startNode, goalNode, DiagonalDistanceHeuristic, true);
                 }
             }
         }
@@ -112,12 +121,21 @@ public class Pathfinding : MonoBehaviour
 
                 // if neighbor is in closed list then skip
                 // ...
+                if (closedODict.Contains(n))
+                {
+                    continue;
+                }
 
                 // find gNeighbor (g_next)
                 // ...
+                var g_next = gnDict[current] + movement_cost;
+                gnDict[n] = g_next;
 
                 // if needed: update tables, calculate fn, and update open_list using FakePQListInsert() function
                 // ...
+                fnDict[n] = g_next + heuristic(n.transform, goal.transform);
+                FakePQListInsert(openList, fnDict, n);
+                pathDict[n] = current;
             }
         }
 
@@ -131,9 +149,8 @@ public class Pathfinding : MonoBehaviour
             // create the path by traversing the previous nodes in the pathDict
             // starting at the goal and finishing at the start
             path = new List<GridGraphNode>();
-
-            // ...
-
+            path.Add(goal);
+            RecursivePathSearch(path, pathDict, start, goal);
             // reverse the path since we started adding nodes from the goal 
             path.Reverse();
         }
@@ -226,5 +243,38 @@ public class Pathfinding : MonoBehaviour
                     pqList.Insert(0, node);
             }
         }
+    }
+
+    public float DiagonalDistanceHeuristic(Transform start, Transform end)
+    {
+        float ddCost = 1 / (Mathf.Sqrt(2));
+        float orthCost = 1;
+        return
+            (
+                orthCost * 
+                (
+                Mathf.Abs(start.position.x - end.position.x)
+                +
+                Mathf.Abs(start.position.z - end.position.z)
+                )
+                +
+                (ddCost - 2 * orthCost)
+                *
+                Mathf.Min(
+                    Mathf.Abs(start.position.x - end.position.x)
+                    ,
+                    Mathf.Abs(start.position.z - end.position.z)
+                    )
+            );
+    }
+
+    private void RecursivePathSearch(List<GridGraphNode> path, Dictionary<GridGraphNode, GridGraphNode> pathDict, GridGraphNode start, GridGraphNode next)
+    {
+        if (next == start)
+        {
+            return;
+        }
+        path.Add(pathDict[next]);
+        RecursivePathSearch(path, pathDict, start, pathDict[next]);
     }
 }

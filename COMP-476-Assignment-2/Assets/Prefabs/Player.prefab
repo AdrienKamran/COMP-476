@@ -1611,7 +1611,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 1476372785830444958}
-  cc: {fileID: 0}
+  cc: {fileID: 1920107896}
 --- !u!54 &7041230253815051501
 Rigidbody:
   m_ObjectHideFlags: 0
