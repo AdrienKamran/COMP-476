@@ -30550,7 +30550,7 @@ MonoBehaviour:
   rotationSpeed: 300
   targetObj: {fileID: 0}
   rb: {fileID: 0}
-  stopRadius: 0.5
+  stopRadius: 0.1
   slowRadius: 2
   farRadius: 1000
   distance: 0

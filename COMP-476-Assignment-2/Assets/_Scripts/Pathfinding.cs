@@ -18,7 +18,9 @@ public class Pathfinding : MonoBehaviour
     public GameObject pathPointPrefab;
     public GameObject npcObj;
     public List<GridGraphNode> path;
+
     private NPC npc;
+    private int pathNodeIndex = 0;
 
     private void Start()
     {
@@ -37,21 +39,38 @@ public class Pathfinding : MonoBehaviour
                     goalNode = null;
                     ClearPoints();
                     npc.targetObj = null;
+                    pathNodeIndex = 0;
                 }
 
                 if (startNode == null)
                 {
                     startNode = hit.collider.gameObject.GetComponent<GridGraphNode>();
                     npcObj.transform.position = startNode.transform.position;
+                    pathNodeIndex = 1;
                 }
                 else if (goalNode == null)
                 {
                     goalNode = hit.collider.gameObject.GetComponent<GridGraphNode>();
                     // TODO: use an admissible heuristic and pass it to the FindPath function
                     path = FindPath(startNode, goalNode, DiagonalDistanceHeuristic, true);
-                    npc.targetObj = goalNode.gameObject;
+                    npc.targetObj = path[pathNodeIndex].gameObject;
                     //StartCoroutine(WalkPath(path));
                 }
+            }
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (npc.distance < 0.5f && goalNode != null)
+        {
+            Debug.Log("Path node #" + pathNodeIndex + " reached.");
+            //if (!npc.targetObj.Equals(goalNode))
+            if (pathNodeIndex < (path.Count-1))
+            {
+                pathNodeIndex++;
+                npc.targetObj = path[pathNodeIndex].gameObject;
+                Debug.Log("Moving to path node #" + pathNodeIndex + ".");
             }
         }
     }
@@ -131,13 +150,17 @@ public class Pathfinding : MonoBehaviour
                 // find gNeighbor (g_next)
                 // ...
                 var g_next = gnDict[current] + movement_cost;
-                gnDict[n] = g_next;
+                //if (!gnDict.ContainsKey(n))
+                if (true)
+                {
+                    gnDict[n] = g_next;
 
-                // if needed: update tables, calculate fn, and update open_list using FakePQListInsert() function
-                // ...
-                fnDict[n] = g_next + heuristic(n.transform, goal.transform);
-                FakePQListInsert(openList, fnDict, n);
-                pathDict[n] = current;
+                    // if needed: update tables, calculate fn, and update open_list using FakePQListInsert() function
+                    // ...
+                    fnDict[n] = g_next + heuristic(n.transform, goal.transform);
+                    FakePQListInsert(openList, fnDict, n);
+                    pathDict[n] = current;
+                }
             }
         }
 
