@@ -4,20 +4,28 @@ using UnityEngine;
 
 public class NPC : MonoBehaviour
 {
+    // Movement speed scalar for seek
     public float moveSpeed;
+    // Maximum speed threshold for animator blend tree
     public float maxSpeed;
+    // LookWhereYouMove rotation speed (degrees per second)
     public float rotationSpeed = 300f;
+    // The object the NPC will move towards
     public GameObject targetObj;
     public Rigidbody rb;
     private Animator animator;
+    // Radii for smooth movement
     public float stopRadius = 1f;
     public float slowRadius = 6f;
     public float farRadius = 1000f;
+    // The distance bewteen the NPC and the target
     public float distance;
 
+    // The NPC's target (used to access the Vector3)
     private Transform target;
+    // The NPC's actual movement speed magnitude
     private float seekVelocityMagnitude = 0;
-
+    // The NPC's movement vector, fed into seek
     [SerializeField] private Vector3 movement;
 
     // Start is called before the first frame update
@@ -35,6 +43,7 @@ public class NPC : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Animator magic, DO NOT TOUCH
         animator.SetFloat("Blend", seekVelocityMagnitude / maxSpeed);
     }
 
@@ -43,11 +52,13 @@ public class NPC : MonoBehaviour
         if (targetObj != null)
         {
             target = targetObj.transform;
-            // First, find the target.
+            // First, find the target
             LockTarget();
-            // Do the kinematic seek math to determine the velocity
+            // Do the kinematic seek math to determine the velocity + movement vector
             movement = KinematicSeek();
+            // Rotate towards target
             LookAtMovement();
+            // Use movement vector to move
             Move();
         }
     }

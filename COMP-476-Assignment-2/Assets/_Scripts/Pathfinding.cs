@@ -9,8 +9,10 @@ public class Pathfinding : MonoBehaviour
     public bool debug;
     [SerializeField] private GridGraph graph;
 
+    // A delegate function which allows any
     public delegate float Heuristic(Transform start, Transform end);
 
+    public LineRenderer lineRenderer;
     public GridGraphNode startNode;
     public GridGraphNode goalNode;
     public GameObject openPointPrefab;
@@ -24,6 +26,8 @@ public class Pathfinding : MonoBehaviour
 
     private void Start()
     {
+        lineRenderer.startColor = Color.magenta;
+        lineRenderer.endColor = Color.magenta;
         npc = npcObj.GetComponent<NPC>();
     }
 
@@ -56,6 +60,16 @@ public class Pathfinding : MonoBehaviour
                     npc.targetObj = path[pathNodeIndex].gameObject;
                     //StartCoroutine(WalkPath(path));
                 }
+            }
+        }
+        if (startNode != null && goalNode != null && path != null)
+        {
+            lineRenderer.positionCount = path.Count;
+            Debug.Log("Drawing debug lines!");
+            for(int i = 0; i < path.Count; i++)
+            {
+                //Debug.DrawLine(path[i].transform.position, path[i - 1].transform.position, Color.magenta);
+                lineRenderer.SetPosition(i, path[i].transform.position);
             }
         }
     }
@@ -150,8 +164,7 @@ public class Pathfinding : MonoBehaviour
                 // find gNeighbor (g_next)
                 // ...
                 var g_next = gnDict[current] + movement_cost;
-                //if (!gnDict.ContainsKey(n))
-                if (true)
+                if (!gnDict.ContainsKey(n))
                 {
                     gnDict[n] = g_next;
 
