@@ -13,8 +13,8 @@ public class NPC : MonoBehaviour
     public float stopRadius = 1f;
     public float slowRadius = 6f;
     public float farRadius = 1000f;
+    public float distance;
 
-    [SerializeField] private float distance;
     private Transform target;
     private float seekVelocityMagnitude = 0;
 
@@ -67,17 +67,14 @@ public class NPC : MonoBehaviour
 
         if (distance <= stopRadius)
         {
-            Debug.Log("Inside stop radius");
             desiredVelocity *= 0;
         }
         else if (distance < slowRadius)
         {
-            Debug.Log("Inside slow radius");
             desiredVelocity *= (distance / slowRadius);
         }
 
         seekVelocityMagnitude = desiredVelocity.magnitude;
-        Debug.Log(seekVelocityMagnitude);
         return desiredVelocity;
     }
 

@@ -17,6 +17,7 @@ public class Pathfinding : MonoBehaviour
     public GameObject closedPointPrefab;
     public GameObject pathPointPrefab;
     public GameObject npcObj;
+    public List<GridGraphNode> path;
     private NPC npc;
 
     private void Start()
@@ -46,9 +47,10 @@ public class Pathfinding : MonoBehaviour
                 else if (goalNode == null)
                 {
                     goalNode = hit.collider.gameObject.GetComponent<GridGraphNode>();
-                    npc.targetObj = hit.collider.gameObject;
                     // TODO: use an admissible heuristic and pass it to the FindPath function
-                    List<GridGraphNode> path = FindPath(startNode, goalNode, DiagonalDistanceHeuristic, true);
+                    path = FindPath(startNode, goalNode, DiagonalDistanceHeuristic, true);
+                    npc.targetObj = goalNode.gameObject;
+                    //StartCoroutine(WalkPath(path));
                 }
             }
         }
@@ -61,7 +63,7 @@ public class Pathfinding : MonoBehaviour
         // if no heuristic is provided then set heuristic = 0
         if (heuristic == null) heuristic = (Transform s, Transform e) => 0;
 
-        List<GridGraphNode> path = null;
+        List<GridGraphNode> path = new List<GridGraphNode>();
         bool solutionFound = false;
 
         // dictionary to keep track of g(n) values (movement costs)
@@ -276,5 +278,24 @@ public class Pathfinding : MonoBehaviour
         }
         path.Add(pathDict[next]);
         RecursivePathSearch(path, pathDict, start, pathDict[next]);
+    }
+
+    IEnumerator WalkPath(List<GridGraphNode> path)
+    {
+        Debug.Log("WalkPath started");
+        foreach (GridGraphNode node in path)
+        {
+            if (node == path[0])
+            {
+                Debug.Log("At start node");
+                continue;
+            }
+            Debug.Log("Moving to node #"+path.IndexOf(node));
+            while (npc.distance > 0.7f)
+            {
+                npc.targetObj = node.gameObject;
+                yield return null;
+            }
+        }
     }
 }

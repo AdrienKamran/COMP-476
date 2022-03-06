@@ -2162,6 +2162,7 @@ MonoBehaviour:
   closedPointPrefab: {fileID: 1294200121035956867, guid: a6a46765297139444ba9ba8a33abda5a, type: 3}
   pathPointPrefab: {fileID: 1294200121035956867, guid: b5649030f2e81b141a67333d45139e1d, type: 3}
   npcObj: {fileID: 1862057393}
+  path: []
 --- !u!1 &102532397
 GameObject:
   m_ObjectHideFlags: 0
@@ -30549,8 +30550,8 @@ MonoBehaviour:
   rotationSpeed: 300
   targetObj: {fileID: 0}
   rb: {fileID: 0}
-  stopRadius: 1
-  slowRadius: 6
+  stopRadius: 0.5
+  slowRadius: 2
   farRadius: 1000
   distance: 0
   movement: {x: 0, y: 0, z: 0}
