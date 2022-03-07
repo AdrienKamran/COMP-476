@@ -143,6 +143,7 @@ GameObject:
   - component: {fileID: 7398867636478075467}
   - component: {fileID: 7398867636340031648}
   - component: {fileID: 6178783111767233429}
+  - component: {fileID: 1862057394}
   m_Layer: 2
   m_Name: Robot_Kyle
   m_TagString: Not Tagged
@@ -215,6 +216,28 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 84
   m_CollisionDetection: 0
+--- !u!114 &1862057394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7398867636487557163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8eeb7fdfee1d6c44d8a9ceb1f2163114, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 0.1
+  maxSpeed: 10
+  rotationSpeed: 300
+  targetObj: {fileID: 0}
+  rb: {fileID: 0}
+  stopRadius: 0.1
+  slowRadius: 3.5
+  farRadius: 1000
+  distance: 0
+  movement: {x: 0, y: 0, z: 0}
 --- !u!1 &7398867636487557167
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,25 +9,33 @@ public class Pathfinding : MonoBehaviour
     public bool debug;
     [SerializeField] private GridGraph graph;
 
-    // A delegate function which allows any
+    // A delegate function which accepts any heuristic function to be used later
     public delegate float Heuristic(Transform start, Transform end);
-
+    // For rendering the line between consecutive path points
     public LineRenderer lineRenderer;
+    // Where the path starts
     public GridGraphNode startNode;
+    // Where the path ends
     public GridGraphNode goalNode;
+    // Prefabs for use in visualizing the closed, open and path points
     public GameObject openPointPrefab;
     public GameObject closedPointPrefab;
     public GameObject pathPointPrefab;
+    // A reference to the NPC which will be walking the path
     public GameObject npcObj;
+    // The path of nodes from the start node to the goal node
     public List<GridGraphNode> path;
-
+    // The NPC movement script attached to the NPC object
     private NPC npc;
+    // A counter for where we are in the path when traversing it
     private int pathNodeIndex = 0;
 
     private void Start()
     {
+        // Setting up the line renderer
         lineRenderer.startColor = Color.magenta;
         lineRenderer.endColor = Color.magenta;
+        // Setting up the NPC
         npc = npcObj.GetComponent<NPC>();
     }
 
@@ -35,8 +43,10 @@ public class Pathfinding : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
+            // On-click behavior during game runtime
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Node")))
             {
+                // Reset the nodes if we already have a start + goal node
                 if (startNode != null && goalNode != null)
                 {
                     startNode = null;
@@ -45,30 +55,31 @@ public class Pathfinding : MonoBehaviour
                     npc.targetObj = null;
                     pathNodeIndex = 0;
                 }
-
+                // Set the start node if it's not set
                 if (startNode == null)
                 {
                     startNode = hit.collider.gameObject.GetComponent<GridGraphNode>();
                     npcObj.transform.position = startNode.transform.position;
-                    pathNodeIndex = 1;
                 }
+                // Set the goal node if it's not set
                 else if (goalNode == null)
                 {
                     goalNode = hit.collider.gameObject.GetComponent<GridGraphNode>();
-                    // TODO: use an admissible heuristic and pass it to the FindPath function
+                    // Pass the heuristic (here, diagonal distance) to the FindPath function, then set the path with the returned one
                     path = FindPath(startNode, goalNode, DiagonalDistanceHeuristic, true);
+                    //path = FindPath(startNode, goalNode);
+                    // Set the target of the NPC to the first node in the path
                     npc.targetObj = path[pathNodeIndex].gameObject;
-                    //StartCoroutine(WalkPath(path));
                 }
             }
         }
+        // Once the path is set...
         if (startNode != null && goalNode != null && path != null)
         {
+            // Render the lines connecting the path nodes in sequence
             lineRenderer.positionCount = path.Count;
-            Debug.Log("Drawing debug lines!");
             for(int i = 0; i < path.Count; i++)
             {
-                //Debug.DrawLine(path[i].transform.position, path[i - 1].transform.position, Color.magenta);
                 lineRenderer.SetPosition(i, path[i].transform.position);
             }
         }
@@ -76,10 +87,11 @@ public class Pathfinding : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // If we aren't close to the target node and the goal node exists...
         if (npc.distance < 0.5f && goalNode != null)
         {
             Debug.Log("Path node #" + pathNodeIndex + " reached.");
-            //if (!npc.targetObj.Equals(goalNode))
+            // Walk down the path by incrementing through the nodes and setting them as targets
             if (pathNodeIndex < (path.Count-1))
             {
                 pathNodeIndex++;
@@ -151,45 +163,44 @@ public class Pathfinding : MonoBehaviour
             List<GridGraphNode> neighbors = graph.GetNeighbors(current);
             foreach (GridGraphNode n in neighbors)
             {
+                // Assume the cost for movement in any direction is the same
                 float movement_cost = 1;
-                // TODO
 
-                // if neighbor is in closed list then skip
-                // ...
+                // Skip this node in the evaluation if we've already evaluated it
                 if (closedODict.Contains(n))
                 {
                     continue;
                 }
 
-                // find gNeighbor (g_next)
-                // ...
+                // Set the gn value for the neighbor node
                 var g_next = gnDict[current] + movement_cost;
+                // If the gn dictionary doesn't contain the neighbor...
                 if (!gnDict.ContainsKey(n))
                 {
+                    // Set the movement cost of the neighbor
                     gnDict[n] = g_next;
-
-                    // if needed: update tables, calculate fn, and update open_list using FakePQListInsert() function
-                    // ...
+                    // Calculate fn using the sum of gn and the heuristic
                     fnDict[n] = g_next + heuristic(n.transform, goal.transform);
+                    // Update the openList using FakePQListInsert() function
                     FakePQListInsert(openList, fnDict, n);
+                    // Set the "came from" node of the neighbor to this node
                     pathDict[n] = current;
                 }
             }
         }
 
-        // if the closed list contains the goal node then we have found a solution
+        // If the closed list contains the goal node then we have found a solution
         if (!solutionFound && closedODict.Contains(goal))
             solutionFound = true;
 
         if (solutionFound)
         {
-            // TODO
-            // create the path by traversing the previous nodes in the pathDict
-            // starting at the goal and finishing at the start
+            // Create the path by traversing the previous nodes in the pathDict, from the goal to the start
             path = new List<GridGraphNode>();
             path.Add(goal);
+            // Custom method to accomplish this!
             RecursivePathSearch(path, pathDict, start, goal);
-            // reverse the path since we started adding nodes from the goal 
+            // Reverse the path since we started adding nodes from the goal 
             path.Reverse();
         }
 
@@ -283,10 +294,14 @@ public class Pathfinding : MonoBehaviour
         }
     }
 
+    // The heuristic used to calculate the value of the current node in A*
     public float DiagonalDistanceHeuristic(Transform start, Transform end)
     {
+        // The proportial euclidian distance cost (traversing a square diagonally)
         float ddCost = 1 / (Mathf.Sqrt(2));
+        // The cost for moving across the edge of a square space
         float orthCost = 1;
+        // The math (pre-established in the slides)
         return
             (
                 orthCost * 
@@ -306,6 +321,7 @@ public class Pathfinding : MonoBehaviour
             );
     }
 
+    // Fancy recursive way to iterate through the pathDict and re-construct the actual path
     private void RecursivePathSearch(List<GridGraphNode> path, Dictionary<GridGraphNode, GridGraphNode> pathDict, GridGraphNode start, GridGraphNode next)
     {
         if (next == start)
@@ -314,24 +330,5 @@ public class Pathfinding : MonoBehaviour
         }
         path.Add(pathDict[next]);
         RecursivePathSearch(path, pathDict, start, pathDict[next]);
-    }
-
-    IEnumerator WalkPath(List<GridGraphNode> path)
-    {
-        Debug.Log("WalkPath started");
-        foreach (GridGraphNode node in path)
-        {
-            if (node == path[0])
-            {
-                Debug.Log("At start node");
-                continue;
-            }
-            Debug.Log("Moving to node #"+path.IndexOf(node));
-            while (npc.distance > 0.7f)
-            {
-                npc.targetObj = node.gameObject;
-                yield return null;
-            }
-        }
     }
 }
