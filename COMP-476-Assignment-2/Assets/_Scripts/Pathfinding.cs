@@ -169,13 +169,13 @@ public class Pathfinding : MonoBehaviour
                 // Skip this node in the evaluation if we've already evaluated it
                 if (closedODict.Contains(n))
                 {
-                    continue;
+                    //continue;
                 }
 
                 // Set the gn value for the neighbor node
                 var g_next = gnDict[current] + movement_cost;
                 // If the gn dictionary doesn't contain the neighbor...
-                if (!gnDict.ContainsKey(n))
+                if (!gnDict.ContainsKey(n) || gnDict[n] > g_next)
                 {
                     // Set the movement cost of the neighbor
                     gnDict[n] = g_next;
