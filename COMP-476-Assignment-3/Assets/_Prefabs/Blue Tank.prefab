@@ -175,7 +175,9 @@ MonoBehaviour:
   turnSpeed: 120
   audioSource: {fileID: 8721510925197600854}
   tankFireClip: {fileID: 8300000, guid: 1361aa1c3a88a384eb971c8c981849a3, type: 3}
+  powerUpClip: {fileID: 8300000, guid: ec706dfe4200b354b86d43a9ab2b3211, type: 3}
   bulletForce: 10
+  poweredUp: 0
   rb: {fileID: 7010209233576806595}
   bulletPrefab: {fileID: 372486201194623016, guid: 4625670f18376434fb03676428f99cad, type: 3}
   bulletSpawnPoint: {fileID: 60582341308856331}

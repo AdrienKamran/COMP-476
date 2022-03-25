@@ -8,7 +8,9 @@ public class TankPlayer : MonoBehaviour
     public float turnSpeed;
     public AudioSource audioSource;
     public AudioClip tankFireClip;
+    public AudioClip powerUpClip;
     public float bulletForce;
+    public bool poweredUp;
 
     [SerializeField] private Rigidbody rb;
     [SerializeField] private GameObject bulletPrefab;
@@ -29,6 +31,7 @@ public class TankPlayer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        poweredUp = false;
         fired = false;
         moveInput = 0f;
         turnInput = 0f;
@@ -72,10 +75,26 @@ public class TankPlayer : MonoBehaviour
 
     private void Fire()
     {
+        int modifier = 1;
+        if (poweredUp)
+        {
+            modifier = 2;
+        }
         Debug.Log("[TankPlayer] Bullet fired");
         fired = true;
         audioSource.PlayOneShot(tankFireClip);
         Rigidbody bulletInstance = Instantiate(bulletPrefab.GetComponent<Rigidbody>(), bulletSpawnPoint.position, bulletSpawnPoint.rotation) as Rigidbody;
-        bulletInstance.velocity = bulletForce * bulletSpawnPoint.forward;
+        bulletInstance.velocity = modifier * bulletForce * bulletSpawnPoint.forward;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Power Up"))
+        {
+            Debug.Log("[TankPlayer] Power Up Collected");
+            AudioSource.PlayClipAtPoint(powerUpClip, Camera.main.transform.position);
+            Destroy(collision.gameObject);
+            poweredUp = true;
+        }
     }
 }
