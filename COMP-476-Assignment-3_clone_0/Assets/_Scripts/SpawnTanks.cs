@@ -17,13 +17,12 @@ public class SpawnTanks : MonoBehaviour
         if (PhotonNetwork.LocalPlayer.ActorNumber%2 == 0)
         {
             PhotonNetwork.Instantiate(playerPrefab.name, firstPlayerSpawnPoint.position, Quaternion.identity);
+            PhotonNetwork.Instantiate(zombiePrefab.name, firstZombieSpawnPoint.position, Quaternion.identity);
         }
         else
         {
             PhotonNetwork.Instantiate(playerPrefab.name, secondPlayerSpawnPoint.position, Quaternion.identity);
+            PhotonNetwork.Instantiate(zombiePrefab.name, secondZombieSpawnPoint.position, Quaternion.identity);
         }
-
-        PhotonNetwork.Instantiate(zombiePrefab.name, firstZombieSpawnPoint.position, Quaternion.identity);
-        PhotonNetwork.Instantiate(zombiePrefab.name, secondZombieSpawnPoint.position, Quaternion.identity);
     }
 }

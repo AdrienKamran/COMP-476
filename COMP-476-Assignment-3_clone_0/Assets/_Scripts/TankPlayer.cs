@@ -24,12 +24,14 @@ public class TankPlayer : MonoBehaviour
     private Vector3 movement;
     private Quaternion turnRotation;
     private bool fired;
+    private PhotonView photonView;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
         view = GetComponent<PhotonView>();
+        photonView = GetComponent<PhotonView>();
     }
 
     // Start is called before the first frame update
@@ -52,7 +54,8 @@ public class TankPlayer : MonoBehaviour
 
             if (Input.GetButtonDown("Fire1") && !fired)
             {
-                Fire();
+                photonView.RPC("Fire", RpcTarget.AllViaServer);
+                //Fire();
             }
             else if (Input.GetButtonUp("Fire1") && fired)
             {
@@ -84,6 +87,7 @@ public class TankPlayer : MonoBehaviour
         rb.MoveRotation(rb.rotation * turnRotation);
     }
 
+    [PunRPC]
     private void Fire()
     {
         int modifier = 1;
@@ -94,8 +98,8 @@ public class TankPlayer : MonoBehaviour
         Debug.Log("[TankPlayer] Bullet fired");
         fired = true;
         audioSource.PlayOneShot(tankFireClip);
-        Rigidbody bulletInstance = Instantiate(bulletPrefab.GetComponent<Rigidbody>(), bulletSpawnPoint.position, bulletSpawnPoint.rotation) as Rigidbody;
-        bulletInstance.velocity = modifier * bulletForce * bulletSpawnPoint.forward;
+        GameObject bulletInstance = PhotonNetwork.Instantiate(bulletPrefab.name, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
+        bulletInstance.GetComponent<Rigidbody>().velocity = modifier * bulletForce * bulletSpawnPoint.forward;
     }
 
     private void OnCollisionEnter(Collision collision)
