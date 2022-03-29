@@ -14,7 +14,7 @@ public class SpawnTanks : MonoBehaviour
 
     private void Start()
     {
-        if (PhotonNetwork.LocalPlayer.ActorNumber%2 == 0)
+        if (PhotonNetwork.IsMasterClient)
         {
             PhotonNetwork.Instantiate(playerPrefab.name, firstPlayerSpawnPoint.position, Quaternion.identity);
             PhotonNetwork.Instantiate(zombiePrefab.name, firstZombieSpawnPoint.position, Quaternion.identity);

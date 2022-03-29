@@ -21,7 +21,7 @@ public class Bullet : MonoBehaviour
         {
             Debug.Log("[Bullet] Wall hit by bullet");
             AudioSource.PlayClipAtPoint(wallHitClip, Camera.main.transform.position);
-            Destroy(other.gameObject);
+            //Destroy(other.gameObject);
             Destroy(gameObject);
         }
         else if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("NPC"))

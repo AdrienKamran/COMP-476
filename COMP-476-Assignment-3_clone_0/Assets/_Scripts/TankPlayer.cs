@@ -98,7 +98,7 @@ public class TankPlayer : MonoBehaviour
         Debug.Log("[TankPlayer] Bullet fired");
         fired = true;
         audioSource.PlayOneShot(tankFireClip);
-        GameObject bulletInstance = PhotonNetwork.Instantiate(bulletPrefab.name, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
+        GameObject bulletInstance = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
         bulletInstance.GetComponent<Rigidbody>().velocity = modifier * bulletForce * bulletSpawnPoint.forward;
     }
 
